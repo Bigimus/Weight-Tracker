@@ -1,6 +1,6 @@
 from datetime import date 
 import json
-import csv
+from tkinter import * 
 """
     This program will be used to track your:
         - Weight
@@ -13,29 +13,19 @@ import csv
           this will be stored and not needed after the first program running
         - Age from date of birth -- Finished
         - New users will be able to be added, the program will ask you on start up which user, or new user
-        - All of this information will be stored in a CSV file.  
+        - All of this information will be stored in a json file named Users.json
 """
-"""def setUser(firstName, lastName, gender, DOB, weight, height, BMI, status):
-    dictionary = {
-      "First Name": firstName,
-      "Last Name": lastName,
-      "Gender": gender,
-      "Date of Birth": DOB,
-      "Weight": weight,
-      "Height": height,
-      "BMI": BMI,
-      "Status": status
-    }
-    json_object = json.dumps(dictionary, indent=4)
-    with open("Users.json", "w") as file:
-      file.write(json_object)"""
+def gui():
+    window = Tk()
+    window.geometry('400x300')
+    greeting = Tk.title(text = "Welcome to the Weight Tracker App!")
+    greeting.pack()
+    window.mainloop()
 
-"""def setUser(firstName, lastName, gender, DOB, weight, height, BMI, status):
-    user = [ [firstName, lastName, gender, DOB, weight, height, BMI, status]]
-    with open("Users.csv", mode = "a") as file:
-      csvwriter = csv.writer(file)
-      csvwriter.writerow(user)"""
-      
+def writeJson(data):
+    with open ("Users.json", "w") as file:
+      json.dump(data, file, indent = 4)
+
 def getBMI(height, weight):
     tempHeight = 0
     tempHeight = (height * height)
@@ -72,3 +62,34 @@ def getAge(DOB):
     age = today.year - DOB.year - ((today.month, today.day) < (DOB.month, DOB.day))
     print(age)
     return age
+
+if __name__ == "__main__":
+  gui()
+  firstName = input("What is your first name? ")
+  lastName = input("What is your last name? ")
+  gender = input("What is your gender? ")
+  DOB = input("What is your date of birth? (yyyy-mm-dd) ")
+  year, month, day = DOB.split("-")
+  age = getAge(date(int(year), int(month), int(day)))
+  weight = input("What is your weight? ")
+  height = input("What is your height? ")
+  BMI = getBMI(62, 140)
+  status = getWeightStatus(BMI)
+  
+  with open ("Users.json") as file:
+      data = json.load(file)
+      temp = data["Users"]
+      newUser = {
+      "First Name": firstName,
+      "Last Name": lastName,
+      "Gender": gender,
+      "Date of Birth": DOB,
+      "Age": age,
+      "Weight": weight,
+      "Height": height,
+      "BMI": BMI,
+      "Status": status
+      }
+      temp.append(newUser)
+
+  writeJson(data)
